@@ -129,13 +129,27 @@ function waLink(phone,name,reason,date){
 
 function render(){
   const today=new Date().toISOString().slice(0,10);
-  const todayList=appts.filter(a=>{if(!a.date)return false;const d=new Date(a.date);if(isNaN(d))return String(a.date).includes(today);return d.toISOString().slice(0,10)===today});
-  document.getElementById('todayList').innerHTML=todayList.length?todayList.map(a=>`
-    <div class="card"><h3>${a.name}</h3><p>📞 ${a.phone}</p><p>🔧 ${a.service} — ${a.time}</p><p class="meta">${a.ref} • ${a.status}</p>
-    <a class="btn btn-wa" href="${waLink(a.phone,a.name,a.service,a.date)}" target="_blank">💬 WhatsApp</a>
+  const todayAppts=appts.filter(a=>String(a.date||'').slice(0,10)===today);
+  const todayFUs=fus.filter(f=>String(f.reviewDate||'').slice(0,10)===today && f.status==='PENDING');
+  let html='';
+  if(todayAppts.length){
+    html+='<h3 style="color:var(--navy);font-size:14px;margin:10px 0 8px">📅 Appointments ('+todayAppts.length+')</h3>';
+    html+=todayAppts.map(a=>`<div class="card"><h3>${a.name}</h3><p>📞 ${a.phone}</p><p>🔧 ${a.service} — ${a.time}</p><p class="meta">${a.ref} • ${a.status}</p>
+    <a class="btn btn-wa" href="${waLink(a.phone,a.name,a.service,a.date)}" target="_blank">💬 WA</a>
     <button class="btn btn-ok" onclick="upd('${a.ref}','CONFIRMED','Appointments')">✓ Datang</button>
     <button class="btn btn-no" onclick="upd('${a.ref}','NO_SHOW','Appointments')">✗ Tak</button>
-    <button class="btn btn-reschedule" onclick="upd('${a.ref}','RESCHEDULE','Appointments')">↻ Tukar</button></div>`).join(''):'<div class="empty">Tiada temujanji hari ini</div>';
+    <button class="btn btn-reschedule" onclick="upd('${a.ref}','RESCHEDULE','Appointments')">↻ Tukar</button></div>`).join('');
+  }
+  if(todayFUs.length){
+    html+='<h3 style="color:var(--scarlet);font-size:14px;margin:14px 0 8px">🔴 Follow-Ups Due ('+todayFUs.length+')</h3>';
+    html+=todayFUs.map(f=>`<div class="card red"><h3>${f.name}</h3><p>📞 ${f.phone}</p><p>📋 ${f.reason}</p><p class="meta">${f.id}</p>
+    <a class="btn btn-wa" href="${waLink(f.phone,f.name,f.reason,f.reviewDate)}" target="_blank">💬 WA</a>
+    <button class="btn btn-ok" onclick="upd('${f.id}','DONE','FollowUps')">✓ Jadi</button>
+    <button class="btn btn-no" onclick="upd('${f.id}','NO_SHOW','FollowUps')">✗ Tak</button>
+    <button class="btn btn-reschedule" onclick="upd('${f.id}','RESCHEDULE','FollowUps')">↻ Tukar</button></div>`).join('');
+  }
+  if(!html)html='<div class="empty">Tiada apa-apa hari ini 🎉</div>';
+  document.getElementById('todayList').innerHTML=html;
 
   const pending=fus.filter(f=>f.status==='PENDING').sort((a,b)=>new Date(a.reviewDate)-new Date(b.reviewDate));
   document.getElementById('queueList').innerHTML=pending.length?pending.map(f=>{
