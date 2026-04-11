@@ -51,7 +51,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bott
 <button onclick="unlock()">Masuk / Enter</button>
 </div></div>
 
-<header><h1>📋 MAFS — Menara MDV</h1><button class="lang-btn" onclick="toggleLang()" id="langBtn">EN</button></header>
+<header><h1>📋 MAFS — Menara MDV</h1><button class="lang-btn" onclick="loadAll()" style="margin-right:6px">↻</button><button class="lang-btn" onclick="toggleLang()" id="langBtn">EN</button></header>
 
 <div class="tabs">
 <button class="tab active" onclick="show('today')">📅 Hari Ini</button>
@@ -121,7 +121,7 @@ function waLink(phone,name,reason,date){
 
 function render(){
   const today=new Date().toISOString().slice(0,10);
-  const todayList=appts.filter(a=>String(a.date).slice(0,10)===today);
+  const todayList=appts.filter(a=>{if(!a.date)return false;const d=new Date(a.date);if(isNaN(d))return String(a.date).includes(today);return d.toISOString().slice(0,10)===today});
   document.getElementById('todayList').innerHTML=todayList.length?todayList.map(a=>`
     <div class="card"><h3>${a.name}</h3><p>📞 ${a.phone}</p><p>🔧 ${a.service} — ${a.time}</p><p class="meta">${a.ref} • ${a.status}</p>
     <a class="btn btn-wa" href="${waLink(a.phone,a.name,a.service,a.date)}" target="_blank">💬 WhatsApp</a>
@@ -145,12 +145,12 @@ function render(){
   <div class="stat"><div class="num">${fus.filter(f=>f.status==='DONE').length}</div><div class="lbl">Completed</div></div>`;
 }
 
-async function upd(id,status,sheet){await api({action:'updateStatus',id,status,sheet});loadAll()}
+async function upd(id,status,sheet){await api({action:'updateStatus',id,status,sheet});await loadAll()}
 async function saveFU(){
   const d={action:'addFollowUp',name:document.getElementById('fName').value.trim(),phone:document.getElementById('fPhone').value.trim(),reviewDate:document.getElementById('fDate').value,reason:document.getElementById('fReason').value,notes:document.getElementById('fNotes').value.trim()};
   if(!d.name||!d.phone||!d.reviewDate){alert('Sila isi Nama, Phone, Tarikh');return}
   const res=await api(d);
-  if(res&&res.ok){alert('✓ Saved: '+res.id);['fName','fPhone','fDate','fNotes'].forEach(i=>document.getElementById(i).value='');loadAll();show('queue')}
+  if(res&&res.ok){alert('✓ Saved: '+res.id);['fName','fPhone','fDate','fNotes'].forEach(i=>document.getElementById(i).value='');await loadAll();show('queue')}
   else{alert('❌ Error: '+(res&&res.error||'Unknown'))}
 }
 function doSearch(){
