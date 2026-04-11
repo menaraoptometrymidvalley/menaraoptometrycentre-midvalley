@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Appointment – Menara Optometry Mid Valley</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,'Segoe UI',Roboto,sans-serif}
+body{background:linear-gradient(135deg,#1B1464 0%,#0D0B6F 100%);min-height:100vh;padding:16px;color:#333}
+.container{max-width:560px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.header{background:#1B1464;color:#fff;padding:24px;text-align:center;border-bottom:4px solid #E60012}
+.header h1{font-size:22px;margin-bottom:4px}
+.header p{font-size:13px;opacity:0.9}
+.lang{text-align:right;padding:12px 20px 0;font-size:13px}
+.lang button{background:none;border:1px solid #1B1464;color:#1B1464;padding:4px 12px;border-radius:20px;cursor:pointer;margin-left:4px}
+.lang button.active{background:#1B1464;color:#fff}
+form{padding:20px 24px 24px}
+.group{margin-bottom:16px}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:#1B1464}
+label .req{color:#E60012}
+input,select,textarea{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;transition:border 0.2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#1B1464}
+textarea{min-height:70px;resize:vertical;font-family:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+details{background:#f5f5f8;border-radius:10px;padding:12px 16px;margin-bottom:12px;cursor:pointer}
+details summary{font-weight:600;color:#1B1464;font-size:14px;user-select:none}
+details[open]{background:#eef0f8}
+details div{margin-top:10px;font-size:13px;line-height:1.6;color:#555}
+details div ul{margin-left:18px;margin-top:6px}
+.price{color:#E60012;font-weight:600}
+.submit{width:100%;background:#E60012;color:#fff;border:none;padding:16px;font-size:16px;font-weight:700;border-radius:10px;cursor:pointer;margin-top:8px;box-shadow:0 4px 12px rgba(230,0,18,0.3)}
+.submit:hover{background:#c1000f}
+.submit:disabled{background:#999;cursor:wait}
+.pdpa{font-size:11px;color:#777;text-align:center;margin-top:12px;line-height:1.5}
+.success{display:none;padding:40px 24px;text-align:center}
+.success.show{display:block}
+.success h2{color:#1B1464;margin-bottom:12px}
+.success .ref{background:#1B1464;color:#fff;padding:12px;border-radius:10px;font-size:18px;font-weight:700;margin:16px 0;letter-spacing:1px}
+.success a{display:block;background:#25D366;color:#fff;padding:14px;border-radius:10px;text-decoration:none;font-weight:600;margin-top:12px}
+.footer{background:#f5f5f8;padding:14px;text-align:center;font-size:11px;color:#777}
+[data-bm]{display:none}
+body.bm [data-en]{display:none}
+body.bm [data-bm]{display:inline}
+body.bm [data-bm-block]{display:block}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>MENARA OPTOMETRY CENTRE</h1>
+<p>Mid Valley Megamall • LG-017</p>
+</div>
+<div class="lang">
+<button onclick="setLang('en')" id="btnEn" class="active">EN</button>
+<button onclick="setLang('bm')" id="btnBm">BM</button>
+</div>
+<form id="f" onsubmit="submitForm(event)">
+<h2 style="color:#1B1464;font-size:18px;margin-bottom:14px;padding:0 0 10px;border-bottom:2px solid #E60012">
+<span data-en>Book Your Appointment</span><span data-bm>Tempah Temujanji Anda</span>
+</h2>
+
+<details><summary><span data-en>📋 Services & Price Guide</span><span data-bm>📋 Perkhidmatan & Harga</span></summary>
+<div>
+<strong><span data-en>Comprehensive Eye Exam</span><span data-bm>Pemeriksaan Mata Menyeluruh</span></strong> — <span class="price">RM80</span><br>
+<span data-en>Refraction, binocular vision, ocular health check (~45 min)</span><span data-bm>Refraksi, penglihatan binokular, kesihatan mata (~45 min)</span><br><br>
+<strong>MyopiaCARE Kids</strong> — <span class="price">RM150</span><br>
+<span data-en>Full myopia assessment, axial length, risk profiling, parent consultation (~60 min)</span><span data-bm>Penilaian miopia penuh, panjang aksial, profil risiko, rundingan ibu bapa (~60 min)</span><br><br>
+<strong><span data-en>Digital Eye Strain (DES) Screening</span><span data-bm>Saringan Ketegangan Mata Digital</span></strong> — <span class="price">RM50</span><br>
+<strong><span data-en>Contact Lens Assessment</span><span data-bm>Penilaian Kanta Sentuh</span></strong> — <span class="price">RM100</span><br>
+<strong><span data-en>Cataract / UV Screening</span><span data-bm>Saringan Katarak / UV</span></strong> — <span class="price">RM60</span>
+</div>
+</details>
+
+<details><summary><span data-en>📜 Terms & Conditions</span><span data-bm>📜 Terma & Syarat</span></summary>
+<div>
+<ul>
+<li><span data-en>Please arrive 10 minutes early</span><span data-bm>Sila tiba 10 minit lebih awal</span></li>
+<li><span data-en>Bring current glasses/contact lenses</span><span data-bm>Bawa cermin mata/kanta sentuh semasa</span></li>
+<li><span data-en>Pupil dilation may be required (avoid driving after)</span><span data-bm>Pelebaran pupil mungkin diperlukan</span></li>
+<li><span data-en>Cancellation: please notify 24h in advance</span><span data-bm>Pembatalan: sila maklum 24 jam awal</span></li>
+<li><span data-en>Walk-ins welcome subject to availability</span><span data-bm>Walk-in dialu-alukan tertakluk kekosongan</span></li>
+</ul>
+</div>
+</details>
+
+<div class="group">
+<label><span data-en>Full Name</span><span data-bm>Nama Penuh</span> <span class="req">*</span></label>
+<input type="text" id="name" required>
+</div>
+
+<div class="group">
+<label><span data-en>Phone (WhatsApp)</span><span data-bm>Telefon (WhatsApp)</span> <span class="req">*</span></label>
+<input type="tel" id="phone" placeholder="012-3456789" required>
+</div>
+
+<div class="group">
+<label>IC / <span data-en>Date of Birth</span><span data-bm>Tarikh Lahir</span></label>
+<input type="text" id="ic" placeholder="e.g. 900101 or DD/MM/YYYY">
+</div>
+
+<div class="group">
+<label><span data-en>Service Needed</span><span data-bm>Perkhidmatan Diperlukan</span> <span class="req">*</span></label>
+<select id="service" required>
+<option value="">-- <span data-en>Select</span> --</option>
+<option>Comprehensive Eye Exam</option>
+<option>MyopiaCARE Kids</option>
+<option>Digital Eye Strain (DES)</option>
+<option>Contact Lens Assessment</option>
+<option>Cataract / UV Screening</option>
+<option>Spectacle Collection / Adjustment</option>
+<option>Other / Not Sure</option>
+</select>
+</div>
+
+<div class="row">
+<div class="group">
+<label><span data-en>Preferred Date</span><span data-bm>Tarikh Pilihan</span> <span class="req">*</span></label>
+<input type="date" id="date" required>
+</div>
+<div class="group">
+<label><span data-en>Preferred Time</span><span data-bm>Masa Pilihan</span> <span class="req">*</span></label>
+<select id="time" required>
+<option value="">--</option>
+<option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option>
+<option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+<option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>
+<option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option>
+</select>
+</div>
+</div>
+
+<div class="group">
+<label><span data-en>Existing Customer?</span><span data-bm>Pelanggan Sedia Ada?</span></label>
+<select id="existing"><option>No</option><option>Yes</option></select>
+</div>
+
+<div class="group">
+<label><span data-en>Notes / Concerns</span><span data-bm>Catatan / Aduan</span></label>
+<textarea id="notes" placeholder="e.g. blurry vision, headaches, child's myopia..."></textarea>
+</div>
+
+<button type="submit" class="submit" id="btn">
+<span data-en>📅 CONFIRM BOOKING</span><span data-bm>📅 SAHKAN TEMPAHAN</span>
+</button>
+
+<p class="pdpa">
+<span data-en>By submitting, you consent to Menara Optometry storing your details per PDPA 2010 for appointment purposes only.</span>
+<span data-bm>Dengan menghantar, anda bersetuju Menara Optometry menyimpan butiran anda mengikut PDPA 2010 untuk tujuan temujanji sahaja.</span>
+</p>
+</form>
+
+<div class="success" id="ok">
+<h2>✅ <span data-en>Booking Received!</span><span data-bm>Tempahan Diterima!</span></h2>
+<p><span data-en>Our team will confirm within 30 minutes.</span><span data-bm>Team kami akan sahkan dalam 30 minit.</span></p>
+<div class="ref" id="ref">MDV000000</div>
+<a href="https://wa.me/60115419798" target="_blank">💬 WhatsApp Branch</a>
+</div>
+
+<div class="footer">
+📍 LG-017, Mid Valley Megamall &nbsp;|&nbsp; 📱 +6011-5419 7980<br>
+<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="711c1507311c141f1003101e01051e1c140503085f121e1c5f1c08">[email&#160;protected]</a>
+</div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const URL='https://script.google.com/macros/s/AKfycbzmB1zV17vr0geMQvE8RYJOLSCINigbw6Kl6Jk0SpePKurPXOd1Jgz4L1PqCsh4e-mKOQ/exec';
+function setLang(l){document.body.className=l;document.getElementById('btnEn').classList.toggle('active',l=='en');document.getElementById('btnBm').classList.toggle('active',l=='bm')}
+async function submitForm(e){
+e.preventDefault();
+const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Sending...';
+const data={name:name.value,phone:phone.value,ic:ic.value,service:service.value,date:date.value,time:time.value,existing:existing.value,notes:notes.value};
+try{
+const r=await fetch(URL,{method:'POST',body:JSON.stringify(data)});
+const j=await r.json();
+document.getElementById('f').style.display='none';
+document.getElementById('ref').textContent=j.ref;
+document.getElementById('ok').classList.add('sho
