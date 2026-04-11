@@ -121,7 +121,8 @@ function daysTo(d){const diff=Math.floor((new Date(d)-new Date().setHours(0,0,0,
 function colorFor(d){const x=daysTo(d);if(x<=0)return'red';if(x<=3)return'yellow';return'green'}
 
 function waLink(phone,name,reason,date){
-  const p=phone.replace(/\D/g,'');
+  let p=String(phone||'').replace(/\D/g,'');
+  if(p&&!p.startsWith('60'))p='60'+p.replace(/^0+/,'');
   const msg=`Salam ${name}, ini Menara Optometry Mid Valley. Kami ingin ingatkan review klinikal anda (${reason}) pada ${date}. Sila balas untuk sahkan. — Hi ${name}, this is Menara Optometry MDV reminding you of your clinical review (${reason}) on ${date}. Please reply to confirm.`;
   return`https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
 }
