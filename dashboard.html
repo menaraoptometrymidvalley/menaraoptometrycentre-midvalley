@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ms"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MAFS Dashboard — Menara Optometry MDV</title>
+<style>
+:root{--navy:#1B1464;--scarlet:#E60012;--white:#fff;--bg:#f5f5f7;--gray:#666;--border:#e0e0e0}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:var(--bg);color:#222;padding-bottom:70px}
+.gate{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:999}
+.gate-box{background:#fff;padding:30px;border-radius:12px;text-align:center;width:90%;max-width:340px}
+.gate-box h2{color:var(--navy);margin-bottom:16px}
+.gate-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:16px;margin-bottom:12px}
+.gate-box button{width:100%;padding:12px;background:var(--scarlet);color:#fff;border:0;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
+header{background:var(--navy);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+header h1{font-size:16px}
+.lang-btn{background:var(--scarlet);color:#fff;border:0;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer}
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);overflow-x:auto;position:sticky;top:50px;z-index:99}
+.tab{padding:12px 16px;background:none;border:0;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+.tab.active{color:var(--navy);border-color:var(--scarlet)}
+.content{padding:16px;max-width:900px;margin:0 auto}
+.view{display:none}.view.active{display:block}
+.card{background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid var(--border)}
+.card.red{border-color:#e60012}.card.yellow{border-color:#f5a623}.card.green{border-color:#4caf50}
+.card h3{color:var(--navy);font-size:15px;margin-bottom:4px}
+.card p{font-size:13px;color:#555;margin:2px 0}
+.card .meta{font-size:11px;color:var(--gray);margin-top:4px}
+.btn{padding:8px 12px;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;margin:4px 4px 0 0}
+.btn-wa{background:#25D366;color:#fff}
+.btn-ok{background:#4caf50;color:#fff}
+.btn-no{background:var(--scarlet);color:#fff}
+.btn-reschedule{background:#f5a623;color:#fff}
+.btn-primary{background:var(--navy);color:#fff}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;font-size:14px;margin-bottom:10px;font-family:inherit}
+label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.stat{background:#fff;padding:16px;border-radius:10px;text-align:center;margin-bottom:10px}
+.stat .num{font-size:28px;font-weight:700;color:var(--navy)}
+.stat .lbl{font-size:12px;color:var(--gray)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.bottom-nav{display:none}
+@media(max-width:768px){
+  .tabs{display:none}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);z-index:100}
+  .bottom-nav button{flex:1;padding:10px 4px;background:none;border:0;font-size:10px;color:var(--gray);cursor:pointer}
+  .bottom-nav button.active{color:var(--scarlet);font-weight:700}
+  .bottom-nav button div{font-size:18px;margin-bottom:2px}
+}
+.empty{text-align:center;padding:30px;color:var(--gray)}
+</style></head><body>
+
+<div class="gate" id="gate"><div class="gate-box">
+<h2>🔐 MAFS Dashboard</h2>
+<input type="password" id="pw" placeholder="Password" onkeypress="if(event.key==='Enter')unlock()">
+<button onclick="unlock()">Masuk / Enter</button>
+</div></div>
+
+<header><h1>📋 MAFS — Menara MDV</h1><button class="lang-btn" onclick="toggleLang()" id="langBtn">EN</button></header>
+
+<div class="tabs">
+<button class="tab active" onclick="show('today')">📅 Hari Ini</button>
+<button class="tab" onclick="show('queue')">📞 Follow-Up</button>
+<button class="tab" onclick="show('add')">➕ Tambah</button>
+<button class="tab" onclick="show('search')">🔍 Cari</button>
+<button class="tab" onclick="show('analytics')">📊 Stats</button>
+</div>
+
+<div class="content">
+<div class="view active" id="today"><h2 style="color:var(--navy);margin-bottom:12px" data-bm="Temujanji Hari Ini" data-en="Today's Appointments">Temujanji Hari Ini</h2><div id="todayList"></div></div>
+<div class="view" id="queue"><h2 style="color:var(--navy);margin-bottom:12px" data-bm="Queue Follow-Up" data-en="Follow-Up Queue">Queue Follow-Up</h2><div id="queueList"></div></div>
+<div class="view" id="add"><h2 style="color:var(--navy);margin-bottom:12px" data-bm="Tambah Follow-Up" data-en="Add Follow-Up">Tambah Follow-Up</h2>
+<div class="card"><label>Nama / Name</label><input id="fName">
+<label>Phone (60xxxxxxxxx)</label><input id="fPhone">
+<label>Tarikh Review</label><input type="date" id="fDate">
+<label>Sebab / Reason</label><select id="fReason">
+<option>CL aftercare</option><option>Spectacle collection</option><option>Myopia review 3mth</option>
+<option>Myopia review 6mth</option><option>Myopia review 12mth</option><option>DES review</option><option>Post-cataract</option></select>
+<label>Notes</label><textarea id="fNotes" rows="2"></textarea>
+<button class="btn btn-primary" onclick="saveFU()" data-bm="Simpan" data-en="Save">Simpan</button></div></div>
+<div class="view" id="search"><h2 style="color:var(--navy);margin-bottom:12px">🔍 Customer Search</h2>
+<input id="sQ" placeholder="Nama / Phone / BookingRef" oninput="doSearch()"><div id="sResults"></div></div>
+<div class="view" id="analytics"><h2 style="color:var(--navy);margin-bottom:12px">📊 Analytics</h2><div class="grid" id="stats"></div></div>
+</div>
+
+<div class="bottom-nav">
+<button class="active" onclick="show('today',this)"><div>📅</div>Today</button>
+<button onclick="show('queue',this)"><div>📞</div>Queue</button>
+<button onclick="show('add',this)"><div>➕</div>Add</button>
+<button onclick="show('search',this)"><div>🔍</div>Search</button>
+<button onclick="show('analytics',this)"><div>📊</div>Stats</button>
+</div>
+
+<script>
+const API='https://script.google.com/macros/s/AKfycbzmB1zV17vr0geMQvE8RYJOLSCINigbw6Kl6Jk0SpePKurPXOd1Jgz4L1PqCsh4e-mKOQ/exec';
+let lang='bm', appts=[], fus=[];
+
+function unlock(){if(document.getElementById('pw').value==='mdv123'){sessionStorage.setItem('mafs','1');document.getElementById('gate').style.display='none';loadAll()}else alert('Salah')}
+if(sessionStorage.getItem('mafs')==='1'){document.getElementById('gate').style.display='none';loadAll()}
+
+function toggleLang(){lang=lang==='bm'?'en':'bm';document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';document.querySelectorAll('[data-bm]').forEach(el=>el.textContent=el.dataset[lang]);render()}
+
+function show(id,btn){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab,.bottom-nav button').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');event&&event.target.classList.add('active')}
+
+async function api(payload){
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const txt=await r.text();
+    try{return JSON.parse(txt)}catch(e){console.error('Bad response:',txt);return{ok:false,error:'Server did not return JSON'}}
+  }catch(err){console.error('Fetch failed:',err);return{ok:false,error:err.message||'Network error'}}
+}
+
+async function loadAll(){
+  const [a,f]=await Promise.all([api({action:'getAppointments'}),api({action:'getFollowUps'})]);
+  appts=a.data||[];fus=f.data||[];render()
+}
+
+function daysTo(d){const diff=Math.floor((new Date(d)-new Date().setHours(0,0,0,0))/86400000);return diff}
+function colorFor(d){const x=daysTo(d);if(x<=0)return'red';if(x<=3)return'yellow';return'green'}
+
+function waLink(phone,name,reason,date){
+  const p=phone.replace(/\D/g,'');
+  const msg=`Salam ${name}, ini Menara Optometry Mid Valley. Kami ingin ingatkan review klinikal anda (${reason}) pada ${date}. Sila balas untuk sahkan. — Hi ${name}, this is Menara Optometry MDV reminding you of your clinical review (${reason}) on ${date}. Please reply to confirm.`;
+  return`https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
+}
+
+function render(){
+  const today=new Date().toISOString().slice(0,10);
+  const todayList=appts.filter(a=>String(a.date).slice(0,10)===today);
+  document.getElementById('todayList').innerHTML=todayList.length?todayList.map(a=>`
+    <div class="card"><h3>${a.name}</h3><p>📞 ${a.phone}</p><p>🔧 ${a.service} — ${a.time}</p><p class="meta">${a.ref} • ${a.status}</p>
+    <a class="btn btn-wa" href="${waLink(a.phone,a.name,a.service,a.date)}" target="_blank">💬 WhatsApp</a>
+    <button class="btn btn-ok" onclick="upd('${a.ref}','CONFIRMED','Appointments')">✓ Datang</button>
+    <button class="btn btn-no" onclick="upd('${a.ref}','NO_SHOW','Appointments')">✗ Tak</button>
+    <button class="btn btn-reschedule" onclick="upd('${a.ref}','RESCHEDULE','Appointments')">↻ Tukar</button></div>`).join(''):'<div class="empty">Tiada temujanji hari ini</div>';
+
+  const pending=fus.filter(f=>f.status==='PENDING').sort((a,b)=>new Date(a.reviewDate)-new Date(b.reviewDate));
+  document.getElementById('queueList').innerHTML=pending.length?pending.map(f=>{
+    const c=colorFor(f.reviewDate),icon=c==='red'?'🔴':c==='yellow'?'🟡':'🟢';
+    return`<div class="card ${c}"><h3>${icon} ${f.name}</h3><p>📞 ${f.phone}</p><p>📋 ${f.reason}</p><p>📅 ${String(f.reviewDate).slice(0,10)}</p><p class="meta">${f.id}</p>
+    <a class="btn btn-wa" href="${waLink(f.phone,f.name,f.reason,String(f.reviewDate).slice(0,10))}" target="_blank">💬 WA</a>
+    <button class="btn btn-ok" onclick="upd('${f.id}','DONE','FollowUps')">✓ Jadi</button>
+    <button class="btn btn-no" onclick="upd('${f.id}','NO_SHOW','FollowUps')">✗ Tak</button>
+    <button class="btn btn-reschedule" onclick="upd('${f.id}','RESCHEDULE','FollowUps')">↻ Tukar</button></div>`}).join(''):'<div class="empty">Queue kosong 🎉</div>';
+
+  const s=document.getElementById('stats');
+  s.innerHTML=`<div class="stat"><div class="num">${appts.length}</div><div class="lbl">Total Appts</div></div>
+  <div class="stat"><div class="num">${todayList.length}</div><div class="lbl">Today</div></div>
+  <div class="stat"><div class="num">${pending.length}</div><div class="lbl">Pending FU</div></div>
+  <div class="stat"><div class="num">${fus.filter(f=>f.status==='DONE').length}</div><div class="lbl">Completed</div></div>`;
+}
+
+async function upd(id,status,sheet){await api({action:'updateStatus',id,status,sheet});loadAll()}
+async function saveFU(){
+  const d={action:'addFollowUp',name:document.getElementById('fName').value.trim(),phone:document.getElementById('fPhone').value.trim(),reviewDate:document.getElementById('fDate').value,reason:document.getElementById('fReason').value,notes:document.getElementById('fNotes').value.trim()};
+  if(!d.name||!d.phone||!d.reviewDate){alert('Sila isi Nama, Phone, Tarikh');return}
+  const res=await api(d);
+  if(res&&res.ok){alert('✓ Saved: '+res.id);['fName','fPhone','fDate','fNotes'].forEach(i=>document.getElementById(i).value='');loadAll();show('queue')}
+  else{alert('❌ Error: '+(res&&res.error||'Unknown'))}
+}
+function doSearch(){
+  const q=sQ.value.toLowerCase();if(!q){sResults.innerHTML='';return}
+  const r=[...appts.filter(a=>(a.name+a.phone+a.ref).toLowerCase().includes(q)),...fus.filter(f=>(f.name+f.phone+f.id).toLowerCase().includes(q))];
+  sResults.innerHTML=r.map(x=>`<div class="card"><h3>${x.name}</h3><p>${x.phone}</p><p class="meta">${x.ref||x.id} • ${x.status}</p></div>`).join('')||'<div class="empty">No results</div>';
+}
+</script></body></html>
