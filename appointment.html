@@ -158,20 +158,31 @@ body.bm [data-bm-block]{display:block}
 
 <div class="footer">
 📍 LG-017, Mid Valley Megamall &nbsp;|&nbsp; 📱 +6011-5419 7980<br>
-<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="711c1507311c141f1003101e01051e1c140503085f121e1c5f1c08">[email&#160;protected]</a>
+<a href="mailto:mdv@menaraoptometry.com.my">mdv@menaraoptometry.com.my</a>
 </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const URL='https://script.google.com/macros/s/AKfycbzmB1zV17vr0geMQvE8RYJOLSCINigbw6Kl6Jk0SpePKurPXOd1Jgz4L1PqCsh4e-mKOQ/exec';
-function setLang(l){document.body.className=l;document.getElementById('btnEn').classList.toggle('active',l=='en');document.getElementById('btnBm').classList.toggle('active',l=='bm')}
+function setLang(l){document.body.className=l;document.getElementById('btnEn').classList.toggle('active',l==='en');document.getElementById('btnBm').classList.toggle('active',l==='bm');}
 async function submitForm(e){
-e.preventDefault();
-const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Sending...';
-const data={name:name.value,phone:phone.value,ic:ic.value,service:service.value,date:date.value,time:time.value,existing:existing.value,notes:notes.value};
-try{
-const r=await fetch(URL,{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'text/plain;charset=utf-8'}});
-const j=await r.json();
-document.getElementById('f').style.display='none';
-document.getElementById('ref').textContent=j.ref;
-document.getElementById('ok').classList.add('sho
+  e.preventDefault();
+  const btn=document.getElementById('btn');
+  btn.disabled=true;btn.textContent='Sending...';
+  const f=document.getElementById('f');
+  const g=n=>(f.elements[n]?f.elements[n].value:'');
+  const data={name:g('name'),phone:g('phone'),ic:g('ic'),service:g('service'),date:g('date'),time:g('time'),existing:g('existing'),notes:g('notes')};
+  try{
+    const r=await fetch(URL,{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'text/plain;charset=utf-8'}});
+    const j=await r.json();
+    if(j.status==='success'){
+      f.style.display='none';
+      document.getElementById('ref').textContent=j.ref;
+      document.getElementById('ok').classList.add('show');
+      window.scrollTo(0,0);
+    }else{alert('Error: '+j.message);btn.disabled=false;btn.textContent='Submit';}
+  }catch(err){alert('Network error: '+err.message);btn.disabled=false;btn.textContent='Submit';}
+  return false;
+}
+</script>
+</body></html>
